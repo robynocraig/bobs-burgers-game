@@ -60,7 +60,7 @@ class App extends Component {
       currentScore: 0,
       topScore: this.state.topScore,
       message: "Start Over!",
-      clicked: []
+      clickedImages: []
     });
     this.handleShuffle();
   };
