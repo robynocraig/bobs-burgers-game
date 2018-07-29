@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import FriendCard from "./components/FriendCard";
+import CharacterCard from "./components/CharacterCard";
 import Wrapper from "./components/Wrapper";
 import Bootstrap from "./components/Bootstrap";
-import friends from "./friends.json";
+import characters from "./characters.json";
 import "./App.css";
 
 // this function shuffles the images from friends.json
-function shuffleFriends(array) {
+function shuffleFunction(array) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -18,19 +18,20 @@ class App extends Component {
 
   // Setting this.state.friends to the friends json array
   state = {
-    friends,
+    characters,
     currentScore: 0,
     topScore: 0,
     clickedImages: [],
     message: "Click an image to begin!",
   };
 
-  // shuffle image function
-  handleShuffle = () => {
-    let shuffledFriends = shuffleFriends(friends);
-    this.setState({ friends: shuffledFriends });
+  // shuffle tiles function
+  shuffleTiles = () => {
+    let shuffledCharacters = shuffleFunction(characters);
+    this.setState({ characters: shuffledCharacters });
   };
 
+  // this handles when the character tiles are clicked on
   handleClick = id => {
       if (this.state.clickedImages.indexOf(id) === -1) {
         this.handleIncrement();
@@ -40,21 +41,32 @@ class App extends Component {
       }
     };
 
+  // this is when the counter increments
   handleIncrement = () => {
     const newScore = this.state.currentScore + 1;
     this.setState({
       currentScore: newScore,
       message: ""
     });
-    if (newScore >= this.state.topScore) {
-      this.setState({ topScore: newScore });
-    }
-    else if (newScore === 12) {
-      this.setState({ message: "You win!" });
-    }
-    this.handleShuffle();
+
+    // if the current score is 12, do this
+    newScore === 12 ? (
+      this.setState({
+        message: "You win!",
+        topScore: newScore
+      })
+    ) : (
+      newScore >= this.state.topScore ? (
+        this.setState({ topScore: newScore })
+      ) : (
+        this.shuffleTiles()
+      )
+    );
+
+    this.shuffleTiles();
   };
 
+  // resets the game
   handleReset = () => {
     this.setState({
       currentScore: 0,
@@ -62,11 +74,11 @@ class App extends Component {
       message: "Start Over!",
       clickedImages: []
     });
-    this.handleShuffle();
+    this.shuffleTiles();
   };
 
 
-  // Map over this.state.friends and render a FriendCard component for each friend object
+  // the page renders this
   render() {
     return (
     <div>
@@ -76,16 +88,16 @@ class App extends Component {
         message={this.state.message}
       />
       <Wrapper>
-        {this.state.friends.map(friend => (
-          <FriendCard
+        {this.state.characters.map(character => (
+          <CharacterCard
             handleClick={this.handleClick}
             handleShuffle={this.handleShuffle}
             handleIncrement={this.handleIncrement}
             handleReset={this.handleReset}
-            id={friend.id}
-            key={friend.id}
-            name={friend.name}
-            image={friend.image}
+            id={character.id}
+            key={character.id}
+            name={character.name}
+            image={character.image}
           />
         ))}
       </Wrapper>
